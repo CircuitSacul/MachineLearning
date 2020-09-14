@@ -11,8 +11,6 @@ from cdqa.pipeline.cdqa_sklearn import QAPipeline
 if input('Download model? Only do if you haven\'t already.').lower().startswith('y'):
     download_model(model='bert-squad_1.1', dir='./models')
 
-text = input("Text to answer questions about")
-
 df = pd.read_csv('data/my_data/homework.csv', converters={'paragraphs': literal_eval})
 #df = filter_paragraphs(df)
 print(df)
