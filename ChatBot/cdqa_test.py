@@ -8,8 +8,10 @@ from cdqa.pipeline.cdqa_sklearn import QAPipeline
 # Download data and models
 #download_bnpp_data(dir='./data/bnpp_newsroom_v1.1/')
 
-if input('Download model? Only do if you haven\'t already.').lower().starswith('y'):
+if input('Download model? Only do if you haven\'t already.').lower().startswith('y'):
     download_model(model='bert-squad_1.1', dir='./models')
+
+text = input("Text to answer questions about")
 
 df = pd.read_csv('data/my_data/homework.csv', converters={'paragraphs': literal_eval})
 #df = filter_paragraphs(df)
