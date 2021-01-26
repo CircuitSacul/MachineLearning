@@ -5,6 +5,7 @@ import random
 from time import sleep
 
 import numpy as np
+from progress.bar import Bar
 
 # Set Globals
 # Q-Tables:
@@ -275,18 +276,17 @@ def train(p1, p2, loops):
     game = Game()
     p_list = [p1, p2]
 
-    for i in range(0, loops):
-        if i % 1000 == 0:
-            os.system("clear")
-            print("Training in progress...")
-            print(f"{int(i/1000)+1}/{int(loops/1000)} thousand games")
-        game.__init__()
-        p1.going = True
-        p2.going = True
-        while p1.going or p2.going:
-            for ai in p_list:
-                if ai.going:
-                    ai.next_move(game)
+    with Bar("Training", max=loops/1000) as bar:
+        for i in range(0, loops):
+            if i % 1000 == 0:
+                bar.next()
+            game.__init__()
+            p1.going = True
+            p2.going = True
+            while p1.going or p2.going:
+                for ai in p_list:
+                    if ai.going:
+                        ai.next_move(game)
 
     for ai in p_list:
         ai.save_q_table()
