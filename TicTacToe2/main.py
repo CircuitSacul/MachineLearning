@@ -1,18 +1,19 @@
 # Import Libraries
-import numpy as np
 import os
-import random
 import pickle
+import random
 from time import sleep
 
+import numpy as np
+
 # Set Globals
-#Q-Tables:
-C1_TABLE = 'c1_q_table.pickle'
-C2_TABLE = 'c2_q_table.pickle'
+# Q-Tables:
+C1_TABLE = "c1_q_table.pickle"
+C2_TABLE = "c2_q_table.pickle"
 
 # Action/Observation Space
 ACTION_SPACE = 9
-OBSERVATION_SPACE = 3**9
+OBSERVATION_SPACE = 3 ** 9
 ACTIONS = {
     0: (0, 0),
     1: (0, 1),
@@ -22,7 +23,7 @@ ACTIONS = {
     5: (1, 2),
     6: (2, 0),
     7: (2, 1),
-    8: (2, 2)
+    8: (2, 2),
 }
 
 # Rewards/Penalties
@@ -38,12 +39,12 @@ X = 1
 O = 2
 
 # Game States
-GOING = 'going'
-WIN = 'win'
-DRAW = 'draw'
+GOING = "going"
+WIN = "win"
+DRAW = "draw"
 
 # Action Types
-INVALID = 'invalidAction'
+INVALID = "invalidAction"
 
 
 def color(r, g, b, text):
@@ -51,11 +52,11 @@ def color(r, g, b, text):
 
 
 def get_name(in_type):
-    name = str(in_type).split(' ')[1].replace('>', '')
+    name = str(in_type).split(" ")[1].replace(">", "")
     return name
 
 
-class DefaultCheck():
+class DefaultCheck:
     def __init__(self, include=[], exclude=[]):
         self.include = include
         self.exclude = exclude
@@ -71,7 +72,7 @@ class DefaultCheck():
 
 
 def safe_input(prompt=None, in_type=str, check=None):
-    user_input = input(prompt if prompt is not None else '')
+    user_input = input(prompt if prompt is not None else "")
 
     try:
         converted = in_type(user_input)
@@ -138,15 +139,15 @@ class Game:
         return True
 
     def print_board(self):
-        os.system('clear')
+        os.system("clear")
         for row in self.board:
             for item in row:
                 if item == X:
-                    print('X', end=' ')
+                    print("X", end=" ")
                 elif item == O:
-                    print('O', end=' ')
+                    print("O", end=" ")
                 else:
-                    print('_', end=' ')
+                    print("_", end=" ")
             print()
 
 
@@ -167,7 +168,7 @@ class Computer:
 
     def load_q_table(self, path):
         if os.path.exists(path):
-            with open(path, 'rb') as f:
+            with open(path, "rb") as f:
                 return pickle.load(f)
         else:
             return np.zeros((OBSERVATION_SPACE, ACTION_SPACE))
@@ -175,14 +176,16 @@ class Computer:
     def save_q_table(self, path=None):
         if path is None:
             path = self.q_table_path
-        with open(path, 'wb+') as f:
+        with open(path, "wb+") as f:
             pickle.dump(self.q_table, f)
 
     def reward(self, old_state, action, reward, new_state):
         old_value = self.q_table[int(old_state), int(action)]
         next_max = np.max(self.q_table[int(new_state)])
 
-        new_value = (1 - self.alpha) * old_value + self.alpha * (reward + self.gamma * next_max)
+        new_value = (1 - self.alpha) * old_value + self.alpha * (
+            reward + self.gamma * next_max
+        )
         self.q_table[int(old_state), int(action)] = new_value
 
     def get_action(self, game, is_random=None):
@@ -207,15 +210,29 @@ class Computer:
             if game.status != GOING:
                 if game.status == WIN:
                     if game.is_winner(self.number):
-                        self.reward(self.last_state, self.last_action, WIN_REWARD, state)
+                        self.reward(
+                            self.last_state,
+                            self.last_action,
+                            WIN_REWARD,
+                            state,
+                        )
                     else:
-                        self.reward(self.last_state, self.last_action, LOSE_REWARD, state)
+                        self.reward(
+                            self.last_state,
+                            self.last_action,
+                            LOSE_REWARD,
+                            state,
+                        )
                 elif game.status == DRAW:
-                    self.reward(self.last_state, self.last_action, DRAW_REWARD, state)
+                    self.reward(
+                        self.last_state, self.last_action, DRAW_REWARD, state
+                    )
                 self.going = False
                 return
             else:
-                self.reward(self.last_state, self.last_action, ACTION_REWARD, state)
+                self.reward(
+                    self.last_state, self.last_action, ACTION_REWARD, state
+                )
 
         action = self.get_action(game)
         game.step(action, self.number)
@@ -241,8 +258,8 @@ class Player:
             self.going = False
             return
 
-        col = safe_input(prompt='Col: ', in_type=int)-1
-        row = safe_input(prompt='Row: ', in_type=int)-1
+        col = safe_input(prompt="Col: ", in_type=int) - 1
+        row = safe_input(prompt="Row: ", in_type=int) - 1
         action = None
         for item in ACTIONS:
             if ACTIONS[item] == (row, col):
@@ -259,8 +276,8 @@ def train(p1, p2, loops):
     p_list = [p1, p2]
 
     for i in range(0, loops):
-        if i%1000 == 0:
-            os.system('clear')
+        if i % 1000 == 0:
+            os.system("clear")
             print("Training in progress...")
             print(f"{int(i/1000)+1}/{int(loops/1000)} thousand games")
         game.__init__()
@@ -285,18 +302,37 @@ def play(p1, p2):
                 p.next_move(game)
 
 
-if __name__ == '__main__':
-    print(color(255, 255, 255, "Q-Learning TicTacToe AI Created by Lucas Daniels"))
+if __name__ == "__main__":
+    print(
+        color(
+            255, 255, 255, "Q-Learning TicTacToe AI Created by Lucas Daniels"
+        )
+    )
     check = DefaultCheck(include=[0, 1, 2])
     running = True
     while running:
-        choice = safe_input(prompt='0: Quit\n1: Play\n2: Train\n>', in_type=int, check=check.check)
+        choice = safe_input(
+            prompt="0: Quit\n1: Play\n2: Train\n>",
+            in_type=int,
+            check=check.check,
+        )
         if choice == 2:
             c1 = Computer(1, C1_TABLE, alpha=0.1, gamma=0.8, epsilon=0.1)
             c2 = Computer(2, C2_TABLE, alpha=0.1, gamma=0.8, epsilon=0.1)
-            train(c1, c2, safe_input(prompt='How many games? (Recommended is 10,000 or 100,000)\n>', in_type=int))
+            train(
+                c1,
+                c2,
+                safe_input(
+                    prompt="How many games? (Recommended is 10,000 or 100,000)\n>",
+                    in_type=int,
+                ),
+            )
         elif choice == 1:
-            is_p_first = safe_input(prompt="Do you want to play first? (y/n)\n>").lower().startswith('y')
+            is_p_first = (
+                safe_input(prompt="Do you want to play first? (y/n)\n>")
+                .lower()
+                .startswith("y")
+            )
             if is_p_first:
                 p1 = Player(1)
                 p2 = Computer(2, C2_TABLE)
