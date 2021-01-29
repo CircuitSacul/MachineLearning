@@ -276,10 +276,10 @@ def train(p1, p2, loops):
     game = Game()
     p_list = [p1, p2]
 
-    with Bar("Training", max=loops/1000) as bar:
+    with Bar("Training", max=loops) as bar:
         for i in range(0, loops):
-            if i % 1000 == 0:
-                bar.next()
+            if i % 333 == 0:
+                bar.next(333)
             game.__init__()
             p1.going = True
             p2.going = True
