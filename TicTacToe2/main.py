@@ -305,7 +305,7 @@ def play(p1, p2):
 if __name__ == "__main__":
     print(
         color(
-            255, 255, 255, "Q-Learning TicTacToe AI Created by Lucas Daniels"
+            255, 255, 255, "Q-Learning TicTacToe AI Created by CircuitSacul"
         )
     )
     check = DefaultCheck(include=[0, 1, 2])
